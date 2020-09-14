@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* .main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .main div {
+            width: 500px;
+            height: 100px;
+            background-color: antiquewhite;
+            color: aqua;
+            margin: 5px;
+            display: flex;
+            justify-content: center;
+        } */
+        /* .box {
+            display: flex;
+            background-color: bisque;
+            width: 800px;
+            height: 400px;
+            justify-content: center;
+            justify-items: center;
+        }
+        
+        .red {
+            width: 100px;
+            height: 100px;
+            background-color: red;
+        } */
+        
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body,
+        html {
+            height: 100%;
+            font-size: 10px;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            flex: 0 0 6.25rem;
+            background-color: #999999;
+        }
+        
+        .content {
+            display: flex;
+            flex: 1;
+            background-color: seashell;
+        }
+        
+        .left {
+            flex: 0 1 25%;
+            background-color: skyblue;
+        }
+        
+        .main {
+            flex: 0 0 75%;
+            background-color: tan;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            /* align-items: center; */
+        }
+        
+        .main>div {
+            width: 12.5rem;
+            height: 12.5rem;
+            background-color: aqua;
+            margin: 0.3125rem;
+        }
+        
+        footer {
+            flex-basis: 4.625rem;
+            background-color: #999999;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <div class="main">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+    </div> -->
+
+    <!-- <div class="box">
+        <div class="red">red</div>
+    </div> -->
+
+    <header>
+        头部
+    </header>
+    <div class="content">
+        <div class="left"></div>
+        <div class="main">
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+            <div>4</div>
+            <div>5</div>
+            <div>6</div>
+            <div>7</div>
+        </div>
+    </div>
+    <footer>
+        footer
+    </footer>
+
+
+    <script>
+        // 代表依赖类
+        class Dep {
+            constructor() {
+                this.subscribers = [] // 把所有目标收集到订阅里 
+            }
+            addSub(sub) { // 当有可观察目标时，添加到订阅里
+                if (sub && !this.subscribers.includes(sub)) {
+                    // 只添加未添加过的订阅
+                    this.subscribers.push(sub)
+                }
+            }
+            notify() { // 当被观察的属性发生变动时通知所有依赖于它的对象
+                this.subscribers.forEach(fn => fn()) // 重新执行所有订阅过的目标方法
+            }
+        }
+
+        let man = {
+            age: 18,
+            sex: "男",
+            other: {
+                name: "蒋",
+                tel: '18566018560'
+            }
+        }
+        let dep = new Dep()
+
+        let pro = new Proxy(man, {
+            get: function(obj, key) {
+                console.log("get-obj:", obj);
+                console.log('get-key:', key);
+                return obj[key];
+            },
+            set: function(obj, key, newval) {
+                console.log("set-obj:", obj);
+                console.log('set-key:', key);
+                console.log('set-newval:', newval);
+                obj[key] = newval
+                dep.notify()
+                return true;
+            }
+        });
+
+        function dddd() {
+
+            return new Promise(function(resolove, reject) {
+                setTimeout(() => {
+                    resolove('哈哈哈')
+                }, 3000);
+            })
+        }
+        dddd().then(function(str) {
+            pro.sex = str;
+            pro.other.name = "及试试"
+            console.log(man.other.name)
+        })
+
+        let val = new Promise(function(resolove, reject) {
+            setTimeout(() => {
+                resolove("datavalue");
+            }, 4000);
+        })
+        val.then(function(res) {
+            alert(res);
+        })
+    </script>
+</body>
+
+</html>
